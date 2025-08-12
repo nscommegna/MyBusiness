@@ -8,6 +8,7 @@ public class Constants {
     public static String REGISTRO = "Registro";
     public static String GESTIONE_FORNITORI = "Gestione Fornitori";
     public static String GESTIONE_CLIENTI = "Gestione Clienti";
+    public static String GESTIONE_MEZZI = "Gestione Mezzi";
     public static String DETTAGLIO_FORNITORE = "Dettaglio Fornitore";
     //PAGE FILES
     public static String PAGE_REGISTRO = "homeContent.jsp";
@@ -17,5 +18,8 @@ public class Constants {
 
     //CLIENTI
     public static String PAGE_CLIENTI = "listaClienti.jsp";
+
+    //MEZZI
+    public static String PAGE_MEZZI = "listaMezzi.jsp";
 
 }

@@ -12,6 +12,8 @@
             <li class="nav-item"><a href="/" class="nav-link active">Home</a></li>
             <li><a href="/fornitori" class="nav-link link-dark">Fornitori</a></li>
             <li><a href="/clienti" class="nav-link link-dark">Clienti</a></li>
+            <li><a href="/mezzi" class="nav-link link-dark">Trasporti</a></li>
+            <li><a href="/recap" class="nav-link link-dark">Recap</a></li>
             <li><a href="/spese" class="nav-link link-dark">Spese Varie</a></li>
         </ul>
     </div>
