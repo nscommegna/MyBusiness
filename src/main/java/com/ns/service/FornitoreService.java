@@ -27,7 +27,8 @@ public class FornitoreService {
         // qui puoi mettere eventuali controlli o logica
         return fornitoreRepository.save(fornitore);
     }
-    
+
+
     public void deleteFornitore(Long id) {
         fornitoreRepository.deleteById(id);
     }

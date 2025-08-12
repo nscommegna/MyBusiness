@@ -54,6 +54,12 @@ public class FornitoriController {
         return "redirect:/fornitori";
     }
 
+    @PostMapping("/fornitore/update")
+    public String updateFornitore(@ModelAttribute Fornitore fornitore, RedirectAttributes redirectAttrs) {
+        fornitoreService.save(fornitore);
+        redirectAttrs.addFlashAttribute(new Message("Fornitore aggiornato con successo!", MessageType.SUCCESS));
+        return "redirect:/fornitori"; // o la pagina lista fornitori
+    }
 
 /*    @GetMapping("/fornitore/{id}")
     public String dettaglioFornitore(@PathVariable Long id, Model model) {
@@ -64,5 +70,13 @@ public class FornitoriController {
         model.addAttribute("acquisti", acquistoService.findByFornitoreId(id));
         return "index"; // torna sempre al layout principale
     }*/
+
+    @PostMapping("/fornitore/delete")
+    public String eliminaFornitore(@RequestParam Long id, RedirectAttributes redirectAttributes) {
+        fornitoreService.deleteFornitore(id);
+        redirectAttributes.addFlashAttribute(new Message("Fornitore eliminato con successo", MessageType.SUCCESS));
+        return "redirect:/fornitori";
+    }
+
 
 }

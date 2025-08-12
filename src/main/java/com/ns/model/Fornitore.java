@@ -15,9 +15,9 @@ public class Fornitore implements Serializable{
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(nullable = false,updatable = false)
 	private Long id;
-	@Column(nullable = false,updatable = false)
+	@Column(nullable = false)
 	private String nome;
-	@Column(nullable = false,updatable = false)
+	@Column(nullable = false)
 	private String cognome;
 	private String indirizzo;
 	private String partitaIva;
