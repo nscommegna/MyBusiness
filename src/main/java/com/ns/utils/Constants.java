@@ -7,10 +7,15 @@ public class Constants {
     //PAGE TITLES
     public static String REGISTRO = "Registro";
     public static String GESTIONE_FORNITORI = "Gestione Fornitori";
+    public static String GESTIONE_CLIENTI = "Gestione Clienti";
     public static String DETTAGLIO_FORNITORE = "Dettaglio Fornitore";
     //PAGE FILES
     public static String PAGE_REGISTRO = "homeContent.jsp";
     public static String PAGE_LISTA_FORNITORI = "listaFornitori.jsp";
     public static String PAGE_DETTAGLIO_FORNITORI = "dettaglioFornitori.jsp";
+
+
+    //CLIENTI
+    public static String PAGE_CLIENTI = "listaClienti.jsp";
 
 }

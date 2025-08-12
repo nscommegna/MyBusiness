@@ -14,7 +14,7 @@ public class Cliente implements Serializable{
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(nullable = false,updatable = false)
 	private Long id;
-	@Column(nullable = false,updatable = false)
+	@Column(nullable = false)
 	private String ragioneSociale;
 	private String citta;
 	private String indirizzo;
