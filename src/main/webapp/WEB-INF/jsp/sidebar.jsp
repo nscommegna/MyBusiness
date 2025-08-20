@@ -5,7 +5,7 @@
 <div id="sidebar" class="bg-light border-end position-fixed" style="width:250px; height:100vh; left:-250px; transition:left 0.3s;">
     <div class="p-3">
         <a href="/" class="d-flex align-items-center mb-3 link-dark text-decoration-none">
-            <span class="fs-4">Menu</span>
+            <span class="fs-4">MyBusiness <i class="fa-solid fa-wine-glass"></i><i class="fa-solid fa-bottle-droplet"></i></span>
         </a>
         <hr>
         <ul class="nav nav-pills flex-column mb-auto">

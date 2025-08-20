@@ -33,7 +33,7 @@ public class Registro {
     private Cliente cliente;
 
     @ManyToOne
-    private Mezzo mezzo;
+    private Trasportatore trasportatore;
 
     private Double prezzoAcquisto;
 
@@ -42,6 +42,8 @@ public class Registro {
     private Double costoTrasporto;
 
     private Double costoTrasportoIva;
+
+    private String mezzo;
 
     public Long getId() {
         return id;
@@ -91,13 +93,10 @@ public class Registro {
         this.cliente = cliente;
     }
 
-    public Mezzo getMezzo() {
-        return mezzo;
+    public Trasportatore getTrasportatore() {
+        return trasportatore;
     }
 
-    public void setMezzo(Mezzo mezzo) {
-        this.mezzo = mezzo;
-    }
 
     public Double getPrezzoAcquisto() {
         return prezzoAcquisto;
@@ -129,5 +128,17 @@ public class Registro {
 
     public void setCostoTrasportoIva(Double costoTrasportoIva) {
         this.costoTrasportoIva = costoTrasportoIva;
+    }
+
+    public void setTrasportatore(Trasportatore trasportatore) {
+        this.trasportatore = trasportatore;
+    }
+
+    public String getMezzo() {
+        return mezzo;
+    }
+
+    public void setMezzo(String mezzo) {
+        this.mezzo = mezzo;
     }
 }

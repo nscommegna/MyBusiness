@@ -1,10 +1,7 @@
 package com.ns.controller;
 
-import com.ns.model.Mezzo;
-import com.ns.model.Mezzo;
-import com.ns.service.MezzoService;
-import com.ns.service.MezzoService;
-import com.ns.service.RegistroService;
+import com.ns.model.Trasportatore;
+import com.ns.service.TrasportatoreService;
 import com.ns.utils.Message;
 import com.ns.utils.MessageType;
 import lombok.extern.slf4j.Slf4j;
@@ -12,12 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.List;
+import java.util.*;
 
 import static com.ns.utils.Constants.*;
 
@@ -25,46 +21,75 @@ import static com.ns.utils.Constants.*;
 @Controller
 public class MezziController {
 
-   @Autowired
-   RegistroService registroService;
-   @Autowired
-   MezzoService mezzoService;
+    @Autowired
+    TrasportatoreService trasportatoreService;
 
 
 
     @GetMapping("/mezzi")
     public String listaMezzo(Model model) {
-        List<Mezzo> mezzi = mezzoService.findAll();
-        model.addAttribute("mezzi",mezzi);
+        List<Trasportatore> trasportatori = trasportatoreService.findAll();
+        model.addAttribute("trasportatori",trasportatori);
         model.addAttribute(PAGE_TITLE,GESTIONE_MEZZI);
         model.addAttribute(PAGE_CONTENT,PAGE_MEZZI);
+        log.info(trasportatori.stream().findFirst().orElse(null).getMezziList().toString());
         // carica dati e aggiungi al model
         //model.addAttribute("mezzi", mezziService.findAll());
         return "index"; // torna sempre al layout principale
     }
 
-    @PostMapping("/mezzo/nuovo")
-    public String creaMezzo(@ModelAttribute Mezzo mezzi, RedirectAttributes redirectAttrs) {
-        mezzoService.save(mezzi);
-        redirectAttrs.addFlashAttribute(new Message("Mezzo creato con successo!",MessageType.SUCCESS));
+
+
+
+    @PostMapping("/trasportatori/salva")
+    public String salvaTrasportatore(@RequestParam(required = false) Long id,
+                                     @RequestParam String nome,
+                                     @RequestParam String targhe,
+                                     RedirectAttributes redirectAttributes) {
+
+        String msg = "";
+        Trasportatore t;
+
+        if (id != null) {
+            // modifica
+            t = trasportatoreService.findById(id)
+                    .orElse(new Trasportatore());
+            msg =  "Trasportatore aggiornato con successo";
+        } else {
+            // nuovo
+            t = new Trasportatore();
+
+            msg =  "Trasportatore aggiunto con successo";
+        }
+        // gestione mezzi
+        t.setNome(nome);
+        t.setMezzi(targhe);
+        t = trasportatoreService.save(t);
+        // save gestisce anche update
+
+        redirectAttributes.addFlashAttribute(new Message(msg,MessageType.SUCCESS));
         return "redirect:/mezzi";
     }
 
-    @PostMapping("/mezzi/update")
-    public String updateMezzo(@ModelAttribute Mezzo mezzi, RedirectAttributes redirectAttrs) {
-        mezzoService.save(mezzi);
-        redirectAttrs.addFlashAttribute(new Message("Mezzo aggiornato con successo!", MessageType.SUCCESS));
-        return "redirect:/mezzi"; // o la pagina lista mezzi
-    }
 
+    @PostMapping("/trasportatori/delete")
+    public String delete(@RequestParam(required = true) String id,
+                                     RedirectAttributes redirectAttributes) {
 
-
-    @PostMapping("/mezzi/delete")
-    public String eliminaMezzo(@RequestParam Long id, RedirectAttributes redirectAttributes) {
-        mezzoService.delete(id);
-        redirectAttributes.addFlashAttribute(new Message("Mezzo eliminato con successo", MessageType.SUCCESS));
+        String msg = "";
+        Trasportatore t;
+        try {
+            t = trasportatoreService.findById(Long.valueOf(id))
+                    .orElseThrow();
+            trasportatoreService.delete(Long.valueOf(id));
+            msg = "Trasportatore eliminato con successo";
+            redirectAttributes.addFlashAttribute(new Message(msg, MessageType.SUCCESS));
+        }
+        catch (Exception e){
+            log.error(e.getMessage());
+            redirectAttributes.addFlashAttribute(new Message().createErrorMessage());
+        }
         return "redirect:/mezzi";
+        }
     }
 
-
-}

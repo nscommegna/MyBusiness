@@ -3,9 +3,9 @@ package com.ns.model;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 public class Trasportatore implements Serializable{
@@ -20,10 +20,11 @@ public class Trasportatore implements Serializable{
 	private Long id;
 	@Column(nullable = false)
 	private String nome;
-	
-	@OneToMany(mappedBy = "trasportatore",fetch = FetchType.EAGER,cascade = {CascadeType.PERSIST})
-	private Set<Mezzo> mezzi  = new HashSet<>();
-	
+	@Column
+	private String mezzi;
+
+	@Transient
+	private List<String> mezziList;
 	
 	public Trasportatore() {
 		
@@ -53,24 +54,19 @@ public class Trasportatore implements Serializable{
 	}
 
 
-	public Set<Mezzo> getMezzi() {
+	public String getMezzi() {
 		return mezzi;
 	}
-	public void setMezzi(Set<Mezzo> mezzi) {
+
+	public void setMezzi(String mezzi) {
 		this.mezzi = mezzi;
 	}
-	
-	public void addMezzo(Mezzo mezzo) {
-		mezzo.setTrasportatore(this);
-		this.mezzi.add(mezzo);
-	}
-	
-	public void removeMezzo(Mezzo mezzo) {
-		mezzo.setTrasportatore(null);
-		this.mezzi.remove(mezzo);
+
+	public List<String> getMezziList() {
+		return Arrays.asList(this.mezzi.split("#"));
 	}
 
-	
-	
-	
+	public void setMezziList(List<String> mezziList) {
+		this.mezziList = mezziList;
+	}
 }

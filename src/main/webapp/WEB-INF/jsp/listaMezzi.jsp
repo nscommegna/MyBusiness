@@ -2,251 +2,312 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 
 <div class="d-flex justify-content-end mb-3">
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#aggiungiClienteModal">
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#nuovoTrasportatoreModal">
         Aggiungi Nuovo
     </button>
 </div>
 
-
-<table id="fornitoriTable" class="table-light table-bordered  align-middle">
-     <thead class="bg-primary text-white">
+<table id="trasportatoriTable" class="table-light table-bordered  align-middle">
+    <thead class="bg-primary text-white">
         <tr>
-            <th>Ragione Sociale</th>
-            <th>Città</th>
-            <th>Indirizzo</th>
-            <th>Telefono</th>
+            <th>Trasportatore</th>
+            <th>Mezzi</th>
             <th>Azioni</th>
         </tr>
     </thead>
     <tbody>
-        <c:forEach var="cliente" items="${clienti}">
+        <c:forEach var="trasportatore" items="${trasportatori}">
             <tr>
-                <td>${cliente.ragioneSociale}</td>
-                <td>${cliente.citta}</td>
-                <td>${cliente.indirizzo}</td>
-                <td>${cliente.telefono}</td>
+                <td>${trasportatore.nome}</td>
                 <td>
-                    <button type="button" class="btn btn-primary btn-modifica"
-                            data-bs-toggle="modal"
-                            data-bs-target="#modificaClienteModal"
-                            data-id="${cliente.id}"
-                            data-nome="${cliente.ragioneSociale}"
-                            data-citta="${cliente.citta}"
-                            data-indirizzo="${cliente.indirizzo}"
-                            data-partitaIva="${cliente.partitaIva}"
-                            data-telefono="${cliente.telefono}"
-                            data-luogoConsegna="${cliente.luogoConsegna}">
-                        <i class="fa fa-edit"></i>
+                    <ul class="mb-0">
+                        <c:forEach var="mezzo" items="${trasportatore.mezziList}">
+                            <li>${mezzo}</li>
+                        </c:forEach>
+                    </ul>
+                </td>
+                <td>
+                    <!-- Modifica -->
+                    <button type="button" class="btn btn-sm btn-primary btn-edit"
+                            data-id="${trasportatore.id}"
+                            data-nome="${trasportatore.nome}"
+                            data-mezzi="${trasportatore.mezzi}"
+                            data-bs-toggle="modal" data-bs-target="#editTrasportatoreModal">
+                        <i class="bi bi-pencil-square"></i>
                     </button>
+                    <!-- Elimina -->
+                    <button type="button" class="btn btn-sm btn-danger btn-delete"
+                            id="btnEliminaTrasp"
+                            data-id="${trasportatore.id}"
+                            data-nome="${trasportatore.nome}"
+                            data-bs-toggle="modal" data-bs-target="#confermaEliminaModal">
+                        <i class="bi bi-trash"></i>
                     </button>
-                    <button type="button" class="btn btn-danger btn-elimina"
-                            data-id="${cliente.id}"
-                            data-nome="${cliente.ragioneSociale}">
-                      <i class="fa fa-trash"></i>
-                    </button>
-
                 </td>
             </tr>
         </c:forEach>
     </tbody>
 </table>
 
-<!--Modale nuovo Cliente -->
-<div class="modal fade" id="aggiungiClienteModal" tabindex="-1" aria-labelledby="aggiungiClienteLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">  <!-- modal-lg per grande -->
-    <div class="modal-content">
-      <form action="${pageContext.request.contextPath}/cliente/nuovo" method="post">
-        <div class="modal-header">
-          <h5 class="modal-title" id="aggiungiClienteModal">Nuovo Cliente</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Chiudi"></button>
-        </div>
-        <div class="modal-body">
-          <div class="row g-3">
-            <div class="col-md-6">
-              <label for="nome" class="form-label">Ragione Sociale</label>
-              <input type="text" class="form-control" id="nome" name="ragioneSociale" required>
-            </div>
-            <div class="col-md-6">
-                          <label for="citta" class="form-label">Città</label>
-                          <input type="text" class="form-control" id="citta" name="citta">
-             </div>
-             <div class="col-md-12">
-                                       <label for="partitaIva" class="form-label">Partita IVA</label>
-                                       <input type="text" class="form-control" id="partitaIva" name="partitaIva">
-                                     </div>
-            <div class="col-md-8">
-                          <label for="indirizzo" class="form-label">Indirizzo</label>
-                          <input type="text" class="form-control" id="indirizzo" name="indirizzo">
-                        </div>
-
-             <div class="col-md-4">
-                          <label for="telefono" class="form-label">Telefono</label>
-                          <input type="text" class="form-control" id="telefono" name="telefono">
-                        </div>
-            <div class="col-md-12">
-              <label for="luogoConsegna" class="form-label">Luogo Consegna</label>
-              <input type="text" class="form-control" id="luogoConsegna" name="luogoConsegna" required>
-            </div>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
-          <button type="submit" class="btn btn-primary">Salva Cliente</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-
-<!--Modale visualizza/modifica Fornitore -->
-
-<div class="modal fade" id="modificaClienteModal" tabindex="-1" aria-labelledby="modificaClienteLabel" aria-hidden="true">
+<!-- Modal Nuovo Trasportatore -->
+<div class="modal fade" id="nuovoTrasportatoreModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <form id="formModificaCliente" method="post" action="${pageContext.request.contextPath}/cliente/update">
-        <div class="modal-header">
-          <h5 class="modal-title col 12" id="modificaClienteLabel">Modifica Cliente</h5>
-           <i id="toggleLock" class="fa fa-lock ms-2 text-secondary col-2 end-0" style="cursor:pointer;" title="Sblocca per modificare"></i>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Chiudi"></button>
+    <form method="post" action="/trasportatori/salva" id="nuovoForm" class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Nuovo Trasportatore</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label class="form-label">Nome Trasportatore</label>
+          <input type="text" name="nome" class="form-control" required>
         </div>
-        <div class="modal-body">
-          <input type="hidden" name="id" id="modifica-id" />
 
-          <div class="mb-6">
-            <label for="modifica-ragioneSociale" class="form-label">Ragione sociale</label>
-            <input type="text" class="form-control" id="modifica-ragioneSociale" name="ragioneSociale" required />
-          </div>
-          <div class="mb-6">
-            <label for="modifica-citta" class="form-label">Città</label>
-            <input type="text" class="form-control" id="modifica-citta" name="citta" required />
-          </div>
-          <div class="mb-12">
-            <label for="modifica-partitaIva" class="form-label">Partita IVA</label>
-            <input type="text" class="form-control" id="modifica-partitaIva" name="partitaIva" />
-          </div>
-          <div class="mb-8">
-            <label for="modifica-indirizzo" class="form-label">Indirizzo</label>
-            <input type="text" class="form-control" id="modifica-indirizzo" name="indirizzo" />
-          </div>
-          <div class="mb-4">
-            <label for="modifica-telefono" class="form-label">Telefono</label>
-            <input type="text" class="form-control" id="modifica-telefono" name="telefono" />
-          </div>
-          <div class="mb-3">
-            <label for="modifica-luogoConsegna" class="form-label">Luogo Consegna</label>
-            <input type="text" class="form-control" id="modifica-luogoConsegna" name="luogoConsegna" />
+        <input type="hidden" name="targhe" id="nuovoTargheHidden">
+
+        <div class="mb-3">
+          <label class="form-label">Targhe</label>
+          <table class="table table-bordered" id="nuovoTabellaTarghe">
+            <thead>
+              <tr>
+                <th>Targa</th>
+                <th style="width:50px;">Azioni</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+          <div class="d-flex">
+            <input type="text" id="nuovaTargaInput" class="form-control me-2" placeholder="Nuova targa">
+            <button type="button" class="btn btn-success" id="nuovoAggiungiTargaBtn">Aggiungi</button>
           </div>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
-          <button type="submit" id="btnSalva" class="btn btn-primary">Salva Modifiche</button>
-        </div>
-      </form>
-    </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
+        <button type="submit" class="btn btn-success">Salva</button>
+      </div>
+    </form>
   </div>
 </div>
 
-<!--Modale elimina Cliente -->
-<div class="modal fade" id="confermaEliminaModal" tabindex="-1" aria-labelledby="confermaEliminaLabel" aria-hidden="true">
+<!-- Modal Modifica Trasportatore -->
+<div class="modal fade" id="editTrasportatoreModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <form method="post" action="/trasportatori/salva" id="editForm" class="modal-content">
+      <div class="modal-header d-flex justify-content-between align-items-center">
+        <h5 class="modal-title">Modifica Trasportatore</h5>
+        <button type="button" class="btn btn-outline-secondary" id="toggleLock" title="Sblocca per modificare">
+          🔒</i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" name="id" id="editId">
+        <input type="hidden" name="targhe" id="targheHidden">
+
+        <div class="mb-3">
+          <label class="form-label">Nome</label>
+          <input type="text" name="nome" id="editNome" class="form-control" disabled required>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Targhe</label>
+          <table class="table table-bordered" id="tabellaTarghe">
+            <thead>
+              <tr>
+                <th>Targa</th>
+                <th style="width:50px;">Azioni</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+          <div class="d-flex">
+            <input type="text" id="nuovaTarga" class="form-control me-2" placeholder="Nuova targa" disabled>
+            <button type="button" class="btn btn-success" id="aggiungiTargaBtn" disabled>Aggiungi</button>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
+        <button type="submit" class="btn btn-primary" id="saveEditBtn" disabled>Salva Modifiche</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modale Conferma Eliminazione -->
+<div class="modal fade" id="confermaEliminaModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog">
-    <div class="modal-content">
-      <form method="post" action="${pageContext.request.contextPath}/cliente/delete">
-        <div class="modal-header bg-danger text-white">
-          <h5 class="modal-title" id="confermaEliminaLabel">Conferma Eliminazione</h5>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-        </div>
-        <div class="modal-body">
-          Sei sicuro di voler eliminare <strong id="nomeClienteDaEliminare"></strong>?
-          <input type="hidden" name="id" id="clienteIdDaEliminare" value="">
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
-          <button type="submit" class="btn btn-danger">Elimina</button>
-        </div>
-      </form>
-    </div>
+    <form method="post" action="/trasportatori/delete" class="modal-content">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title">Conferma Eliminazione</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        Sei sicuro di voler eliminare <b id="nomeDaEliminare"></b>?
+        <input type="hidden" name="id" id="idDaEliminare">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
+        <button type="submit" class="btn btn-danger">Elimina</button>
+      </div>
+    </form>
   </div>
 </div>
-
-
 
 <!-- Bootstrap Icons -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 
-
 <script>
-   $(document).ready(function () {
-     $('#fornitoriTable').DataTable({
-       pageLength: 25,       // righe per pagina
-       lengthChange: false,  // nasconde il select per cambiare il numero righe
-       language: {
-         url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/Italian.json'
-       },
-       pagingType: "simple_numbers"
+
+    // DataTable
+     $(document).ready(function () {
+       $('#trasportatoriTable').DataTable({
+         pageLength: 25,       // righe per pagina
+         lengthChange: false,  // nasconde il select per cambiare il numero righe
+         language: {
+           url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/Italian.json'
+         },
+         pagingType: "simple_numbers"
+       });
      });
-   });
 
-$(document).ready(function() {
-
-  $('#toggleLock').click(function() {
-    const locked = $(this).hasClass('fa-lock');
-    if (locked) {
-      $(this)
-        .removeClass('fa-lock text-secondary')
-        .addClass('fa-lock-open text-success')
-        .attr('title', 'Blocca di nuovo');
-      $('#modificaClienteModal').find('input, select, textarea').prop('disabled', false);
-      $('#btnSalva').prop('disabled', false);
-    } else {
-      $(this)
-        .removeClass('fa-lock-open text-success')
-        .addClass('fa-lock text-secondary')
-        .attr('title', 'Sblocca per modificare');
-      $('#modificaClienteModal').find('input, select, textarea').prop('disabled', true);
-      $('#btnSalva').prop('disabled', true);
-    }
-  });
+    //Gestione Modifica
+    var lockBtn = document.getElementById('toggleLock');
+    var locked = true; // stato iniziale
 
 
-  $('#modificaClienteModal').on('show.bs.modal', function (event) {
-    var button = $(event.relatedTarget); // Bottone che ha aperto il modal
+    // Funzione toggle lucchetto
+    lockBtn.addEventListener('click', function() {
+        locked = !locked;
+        // Cambia icona 🔒 🔓
+        lockBtn.textContent = locked ? '🔒' : '🔓';
+        // Abilita/disabilita tutti gli input della tabella
+        exampleModal.querySelectorAll('input, button').forEach(function(el) {
+                // Non toccare il pulsante lucchetto e il close del modal
+                if (el !== lockBtn && !el.classList.contains('btn-close')) {
+                    el.disabled = locked;
+                }
+            });
+    });
 
-    // Prendo i dati dal data-attribute
-    var id = button.data('id');
-    var nome = button.data('nome');
-    var indirizzo = button.data('indirizzo');
-    var partitaIva = button.data('partitaiva');
-    var telefono = button.data('telefono');
-    var luogoConsegna = button.data('luogoconsegna');
-    var citta = button.data('citta');
 
-    // Popolo i campi del form
-    var modal = $(this);
-    modal.find('#modifica-id').val(id);
-    modal.find('#modifica-ragioneSociale').val(nome);
-    modal.find('#modifica-luogoConsegna').val(luogoConsegna);
-    modal.find('#modifica-indirizzo').val(indirizzo);
-    modal.find('#modifica-partitaIva').val(partitaIva);
-    modal.find('#modifica-telefono').val(telefono);
-    modal.find('#modifica-citta').val(citta);
+     var exampleModal = document.getElementById('editTrasportatoreModal');
 
-     // Di default blocca i campi e il salva, con lucchetto chiuso
-      $('#modificaClienteModal').find('input, select, textarea').prop('disabled', true);
-      $('#btnSalva').prop('disabled', true);
-      $('#toggleLock').removeClass('fa-lock-open text-success').addClass('fa-lock text-secondary').attr('title', 'Sblocca per modificare');
-  });
-});
+         // Evento che si attiva quando il modal viene mostrato
+         exampleModal.addEventListener('show.bs.modal', function (event) {
+             var button = event.relatedTarget; // Bottone che ha attivato il modal
 
-$(document).ready(function() {
-  $('.btn-elimina').click(function() {
-    const data = $(this).data();
-    $('#clienteIdDaEliminare').val(data.id);
-    $('#nomeClienteDaEliminare').text(data.nome);
+             // Estrae i dati dagli attributi data-*
+             var id = button.getAttribute('data-id');
+             var nome = button.getAttribute('data-nome');
+             var mezzi = button.getAttribute('data-mezzi');
 
-    const modal = new bootstrap.Modal(document.getElementById('confermaEliminaModal'));
-    modal.show();
-  });
-});
+             // Aggiorna il contenuto del modal
+             exampleModal.querySelector('#editId').value = id;
+             exampleModal.querySelector('#editNome').value = nome;
 
+               // Legge le targhe dal bottone
+                     var targheString = button.getAttribute('data-mezzi'); // "AA123BB#CC456DD#EE789FF"
+                     var targheArray = targheString.split('#'); // ["AA123BB", "CC456DD", "EE789FF"]
+
+                     // Seleziona il tbody della tabella
+                     var tbody = exampleModal.querySelector('#tabellaTarghe tbody');
+
+                     // Pulisce il contenuto precedente
+                     tbody.innerHTML = '';
+
+                     // Inserisce una riga per ogni targa
+                     targheArray.forEach((targa, index) => {
+                         var tr = document.createElement('tr');
+                          tr.innerHTML =        '<td><input type="text" class="form-control targa-input" value="' + targa + '" disabled></td>' +
+                                                '<td><button type="button" class="btn btn-danger btn-sm btn-elimina" disabled>Elimina</button></td>';
+
+                                 // Aggiunge listener al pulsante elimina
+                                 tr.querySelector('.btn-elimina').addEventListener('click', function() {
+                                     tr.remove();
+
+                                 });
+
+                                 tbody.appendChild(tr);
+
+                     });
+
+                      var addTargaBtn = document.getElementById('aggiungiTargaBtn');
+
+                                                   addTargaBtn.addEventListener('click', function() {
+
+                                                                                     var targa = document.getElementById('nuovaTarga');
+                                                                                     if (targa.value != null && targa.value != ''){
+                                                                                         var tr = document.createElement('tr');
+                                                                                         tr.innerHTML =        '<td><input type="text" class="form-control targa-input" value="' + targa.value + '" ></td>' +
+                                                                                                                '<td><button type="button" class="btn btn-danger btn-sm btn-elimina">Elimina</button></td>';
+
+                                                                                          tr.querySelector('.btn-elimina').addEventListener('click', function() {
+                                                                                                                              tr.remove();
+
+                                                                                                                          });
+                                                                                        targa.value = '';
+                                                                                         tbody.appendChild(tr);
+                                                                                     }
+                                                                                    });
+
+
+               // Submit form
+               var form = document.getElementById('editForm');
+               form.addEventListener('submit', function(e) {
+                   e.preventDefault(); // previene submit normale per mostrare log
+                   var tbody = exampleModal.querySelector('#tabellaTarghe');
+                   var targhe = Array.from(tbody.querySelectorAll('input.targa-input')).map(i => i.value.trim());
+                   document.getElementById('targheHidden').value = targhe.join('#');
+
+                   // Ora submit al backend
+                   form.submit();
+
+               });
+         });
+//FINE GESTIONE MODIFICA
+
+//GESTIONE NUOVO
+var btnNuovaTarga = document.getElementById('nuovoAggiungiTargaBtn');
+btnNuovaTarga.addEventListener('click', function() {
+                                                                                    var tbodyNuovo  = document.getElementById('nuovoTabellaTarghe');
+                                                                                     var targa = document.getElementById('nuovaTargaInput');
+                                                                                     if (targa.value != null && targa.value != ''){
+                                                                                         var tr = document.createElement('tr');
+                                                                                         tr.innerHTML =        '<td><input type="text" class="form-control targa-input" value="' + targa.value + '" ></td>' +
+                                                                                                                '<td><button type="button" class="btn btn-danger btn-sm btn-elimina">Elimina</button></td>';
+
+                                                                                          tr.querySelector('.btn-elimina').addEventListener('click', function() {
+                                                                                                                              tr.remove();
+
+                                                                                                                          });
+                                                                                        targa.value = '';
+                                                                                        tbodyNuovo.appendChild(tr);
+                                                                                     }
+                                                                                    });
+
+var nuovoForm = document.getElementById('nuovoForm');
+var nuovoModal = document.getElementById('nuovoTrasportatoreModal');
+               nuovoForm.addEventListener('submit', function(e) {
+                   e.preventDefault(); // previene submit normale per mostrare log
+                   var tbody = nuovoModal.querySelector('#nuovoTabellaTarghe');
+                   var targhe = Array.from(tbody.querySelectorAll('input.targa-input')).map(i => i.value.trim());
+                   document.getElementById('nuovoTargheHidden').value = targhe.join('#');
+
+                   // Ora submit al backend
+                   nuovoForm.submit();
+
+               });
+
+var eliminaModal = document.getElementById('confermaEliminaModal');
+eliminaModal.addEventListener('show.bs.modal', function (event) {
+             var button = event.relatedTarget; // Bottone che ha attivato il modal
+             // Estrae i dati dagli attributi data-*
+             var nome = button.getAttribute('data-nome');
+             var id = button.getAttribute('data-id');
+             eliminaModal.querySelector('#nomeDaEliminare').textContent = nome;
+             eliminaModal.querySelector('#idDaEliminare').value = id;
+
+             });
 
 </script>
